@@ -1,5 +1,13 @@
+# Replace these old lines:
+# from moviepy.editor import ImageClip, VideoFileClip, CompositeVideoClip
+
+# With these:
+from moviepy.video.VideoClip import ImageClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+
 import streamlit as st
-from moviepy.editor import ImageClip, VideoFileClip, CompositeVideoClip
+
 from PIL import Image
 import tempfile
 import os
