@@ -1,4 +1,5 @@
 streamlit
-pillow
-imageio[ffmpeg]
+pillow==10.0.0
+imageio
+imageio-ffmpeg
 moviepy
