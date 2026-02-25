@@ -1,4 +1,6 @@
+
+
 streamlit
-pillow
+pillow==9.5.0
 imageio[ffmpeg]
-moviepy==1.0.3   # pin older version if newer fails — try without pin first
+moviepy==1.0.3
