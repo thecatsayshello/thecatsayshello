@@ -1,4 +1,4 @@
 streamlit==1.41.1
-moviepy
+moviepy==2.1.0  # or latest without pin
 pillow
 imageio-ffmpeg
