@@ -2,12 +2,12 @@ import streamlit as st
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
-from moviepy import vfx  # ← this is the correct import for effects in MoviePy 2+
+import moviepy.video.fx as vfx  # Correct import: fx namespace
 from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"  # must be the exact filename in the repo
+HAND_GIF = "waving_hand.gif"  # exact name in repo
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
@@ -37,7 +37,7 @@ if uploaded_file is not None:
                 duration = 4.0
                 cat_clip.duration = duration
 
-                # Correct way to loop in MoviePy 2+
+                # Correct v2+ syntax: clip.fx(vfx.loop, ...)
                 hand_looped = hand_clip.fx(vfx.loop, duration=duration)
 
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
