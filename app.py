@@ -6,7 +6,7 @@ from PIL import Image
 import tempfile
 import os
 
-# Must match the exact name of the GIF file in your GitHub repo
+# Exact name of your uploaded GIF file in the repo
 HAND_GIF = "waving_hand.gif"
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
@@ -27,7 +27,6 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     with st.spinner("Adding waving paw... 🐾"):
         try:
-            # Open uploaded image
             cat_img = Image.open(uploaded_file)
 
             with tempfile.TemporaryDirectory() as tmp:
@@ -38,12 +37,14 @@ if uploaded_file is not None:
                 cat_clip = ImageClip(cat_path)
                 hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
-                # Set duration and loop the hand
+                # Modern way: set duration as property (no .set_duration)
                 duration = 4.0
-                cat_clip = cat_clip.set_duration(duration)
+                cat_clip.duration = duration  # ← this is the correct syntax
+
+                # Loop the hand clip
                 hand_looped = hand_clip.loop(duration=duration)
 
-                # Resize hand (~25% of image width – adjust if needed)
+                # Resize hand (~25% of image width)
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
 
                 # Position bottom-right with padding
@@ -56,11 +57,9 @@ if uploaded_file is not None:
                 output_path = os.path.join(tmp, "output.gif")
                 final.write_gif(output_path, fps=15)
 
-            # Success
             st.success("Done!")
             st.image(output_path, caption="Your cat waving hello!", use_column_width=True)
 
-            # Download button
             with open(output_path, "rb") as f:
                 st.download_button(
                     label="⬇️ Download GIF",
