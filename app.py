@@ -4,7 +4,8 @@ from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"   # must be exact name in repo
+# Must be exactly the name of the file in the repo root
+HAND_GIF = "waving_hand.gif"
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
@@ -57,4 +58,4 @@ if uploaded_file is not None:
                 )
 
         except Exception as e:
-            st.error(f"Something went wrong: {str(e)}\n\nTry a different image or smaller file size.")
+            st.error(f"Error: {str(e)}\n\nTry a smaller or different image.")
