@@ -2,22 +2,19 @@ import streamlit as st
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
-from moviepy.video.fx.loop import loop as fx_loop   # ← correct modern import
+from moviepy.video.fx.all import loop   # ← correct import for loop in v2+
 from PIL import Image
 import tempfile
 import os
 
-# Must match the exact filename of the GIF in your repo root
-HAND_GIF = "waving_hand.gif"
+HAND_GIF = "waving_hand.gif"  # exact filename in repo
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
 st.title("🐱 Make The Cats Say Hello ✋")
 st.markdown(
-    """
-    Upload **any cat picture** → the famous waving paw gets added automatically!  
-    Based on the paw from @0xGory's GIF.
-    """
+    "Upload any cat picture → the famous waving paw gets added automatically!\n"
+    "Based on the paw from @0xGory's GIF."
 )
 
 uploaded_file = st.file_uploader(
@@ -40,8 +37,8 @@ if uploaded_file is not None:
                 duration = 4.0
                 cat_clip.duration = duration
 
-                # Use the correct loop fx
-                hand_looped = fx_loop(hand_clip, duration=duration)
+                # Modern loop: use the imported function directly
+                hand_looped = loop(hand_clip, duration=duration)
 
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
 
