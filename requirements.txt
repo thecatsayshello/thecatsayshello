@@ -1,0 +1,4 @@
+streamlit
+pillow
+imageio[ffmpeg]
+moviepy==1.0.3   # pin older version if newer fails — try without pin first
