@@ -1,54 +1,62 @@
 import streamlit as st
-from moviepy.editor import ImageClip, VideoFileClip, CompositeVideoClip
+from moviepy.video.VideoClip import ImageClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from PIL import Image
 import tempfile
 import os
 
-# Your GIF — must be named exactly this in the repo root
-PAW_GIF = "waving_hand.gif"
+HAND_GIF = "waving_hand.gif"   # must be exact name in your repo
 
-st.set_page_config(page_title="Cat + Waving Paw", layout="centered")
+st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
-st.title("🐱 Cat + Waving Paw ✋")
-st.write("Upload your cat photo → waving paw overlay on top!")
+st.title("🐱 Make The Cats Say Hello ✋")
+st.markdown(
+    "Upload any cat picture → the famous waving paw gets added automatically!\n"
+    "Based on the paw from @0xGory's GIF."
+)
 
-uploaded_cat = st.file_uploader("Upload cat photo (jpg/png)", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader(
+    "Upload your cat photo (jpg, png, jpeg)",
+    type=["jpg", "jpeg", "png"]
+)
 
-if uploaded_cat is not None:
-    with st.spinner("Processing..."):
+if uploaded_file is not None:
+    with st.spinner("Adding waving paw... 🐾"):
         try:
-            # Save uploaded cat photo
+            cat_img = Image.open(uploaded_file)
+
             with tempfile.TemporaryDirectory() as tmp:
                 cat_path = os.path.join(tmp, "cat.png")
-                Image.open(uploaded_cat).save(cat_path)
+                cat_img.save(cat_path)
 
-                # Background = your uploaded cat (static image)
-                background = ImageClip(cat_path).set_duration(5.0)  # 5 seconds is enough
+                cat_clip = ImageClip(cat_path)
+                hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
-                # Foreground = your waving paw GIF (with transparency)
-                paw = VideoFileClip(PAW_GIF, has_mask=True)  # has_mask=True is crucial for transparency
+                duration = 4.0
+                cat_clip.duration = duration                     # v2 syntax
+                hand_looped = hand_clip.loop(duration=duration)  # v2 syntax
 
-                # Resize paw to ~30% of cat width (adjust 0.3 if too big/small)
-                paw_resized = paw.resize(width=int(background.w * 0.3))
+                hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.30))
 
-                # Position bottom-right with padding
-                pos_x = background.w - paw_resized.w - 40
-                pos_y = background.h - paw_resized.h - 40
+                pos_x = cat_clip.w - hand_resized.w - 40
+                pos_y = cat_clip.h - hand_resized.h - 40
 
-                # Overlay paw on cat background
-                final = CompositeVideoClip([background, paw_resized.set_position((pos_x, pos_y))])
+                final = CompositeVideoClip([cat_clip, hand_resized.set_position((pos_x, pos_y))])
 
-                # Make it 5 seconds long (paw loops automatically)
-                final = final.set_duration(5.0)
-
-                output_path = os.path.join(tmp, "final.gif")
+                output_path = os.path.join(tmp, "output.gif")
                 final.write_gif(output_path, fps=15)
 
             st.success("Done!")
             st.image(output_path, caption="Your cat with waving paw!", use_column_width=True)
 
             with open(output_path, "rb") as f:
-                st.download_button("Download GIF", f, file_name="cat_waving.gif", mime="image/gif")
+                st.download_button(
+                    label="⬇️ Download GIF",
+                    data=f,
+                    file_name="waving_cat.gif",
+                    mime="image/gif"
+                )
 
         except Exception as e:
-            st.error(f"Error: {str(e)}\n\nMost likely the GIF file is not readable by MoviePy. Try a different GIF.")
+            st.error(f"Error: {str(e)}\n\nTry a different cat image or smaller size.")
