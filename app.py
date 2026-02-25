@@ -1,12 +1,10 @@
 import streamlit as st
-from moviepy.video.VideoClip import ImageClip
-from moviepy.video.io.VideoFileClip import VideoFileClip
-from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+from moviepy.editor import ImageClip, VideoFileClip, CompositeVideoClip
 from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"  # exact filename in repo root
+HAND_GIF = "waving_hand.gif"   # exact name of your GIF file in the repo
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
@@ -34,9 +32,8 @@ if uploaded_file is not None:
                 hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
                 duration = 4.0
-                cat_clip.duration = duration  # v2 syntax
-
-                hand_looped = hand_clip.loop(duration=duration)  # v2 direct method
+                cat_clip = cat_clip.set_duration(duration)
+                hand_looped = hand_clip.loop(duration=duration)
 
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
 
