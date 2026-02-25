@@ -1,26 +1,22 @@
-# Replace these old lines:
-# from moviepy.editor import ImageClip, VideoFileClip, CompositeVideoClip
-
-# With these:
+import streamlit as st
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
-
-import streamlit as st
-
 from PIL import Image
 import tempfile
 import os
 
-# Name of your uploaded GIF file (keep it exact)
+# Must match the exact name of the GIF file in your GitHub repo
 HAND_GIF = "waving_hand.gif"
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
 st.title("🐱 Make The Cats Say Hello ✋")
 st.markdown(
-    "Upload **any cat picture** → the famous waving paw gets added automatically!\n\n"
-    "Based on the paw from @0xGory's GIF."
+    """
+    Upload **any cat picture** → the famous waving paw gets added automatically!  
+    Based on the paw from @0xGory's GIF.
+    """
 )
 
 uploaded_file = st.file_uploader(
@@ -31,32 +27,36 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     with st.spinner("Adding waving paw... 🐾"):
         try:
+            # Open uploaded image
             cat_img = Image.open(uploaded_file)
 
             with tempfile.TemporaryDirectory() as tmp:
                 cat_path = os.path.join(tmp, "cat.png")
                 cat_img.save(cat_path)
 
+                # Create clips
                 cat_clip = ImageClip(cat_path)
                 hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
+                # Set duration and loop the hand
                 duration = 4.0
                 cat_clip = cat_clip.set_duration(duration)
                 hand_looped = hand_clip.loop(duration=duration)
 
-                # Resize hand — change 0.25 to 0.2 / 0.3 if too big/small
+                # Resize hand (~25% of image width – adjust if needed)
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
 
-                # Bottom-right + padding
+                # Position bottom-right with padding
                 pos_x = cat_clip.w - hand_resized.w - 40
                 pos_y = cat_clip.h - hand_resized.h - 40
 
+                # Composite
                 final = CompositeVideoClip([cat_clip, hand_resized.set_position((pos_x, pos_y))])
 
                 output_path = os.path.join(tmp, "output.gif")
                 final.write_gif(output_path, fps=15)
 
-            # Show result
+            # Success
             st.success("Done!")
             st.image(output_path, caption="Your cat waving hello!", use_column_width=True)
 
@@ -70,4 +70,4 @@ if uploaded_file is not None:
                 )
 
         except Exception as e:
-            st.error(f"Something went wrong: {e}\nTry another image or check file size.")
+            st.error(f"Something went wrong: {str(e)}\n\nTry a different image or smaller file size.")
