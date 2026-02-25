@@ -2,12 +2,11 @@ import streamlit as st
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
-import moviepy.video.fx as vfx  # Correct import: fx namespace
 from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"  # exact name in repo
+HAND_GIF = "waving_hand.gif"  # exact filename in your GitHub repo root
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
@@ -31,17 +30,21 @@ if uploaded_file is not None:
                 cat_path = os.path.join(tmp, "cat.png")
                 cat_img.save(cat_path)
 
+                # Create clips
                 cat_clip = ImageClip(cat_path)
                 hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
+                # Set duration (MoviePy 2.x syntax)
                 duration = 4.0
                 cat_clip.duration = duration
 
-                # Correct v2+ syntax: clip.fx(vfx.loop, ...)
-                hand_looped = hand_clip.fx(vfx.loop, duration=duration)
+                # Loop in MoviePy 2.x: direct method .loop()
+                hand_looped = hand_clip.loop(duration=duration)
 
+                # Resize
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.25))
 
+                # Position bottom-right
                 pos_x = cat_clip.w - hand_resized.w - 40
                 pos_y = cat_clip.h - hand_resized.h - 40
 
