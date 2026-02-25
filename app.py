@@ -6,7 +6,7 @@ from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"   # must be exact name in your repo
+HAND_GIF = "waving_hand.gif"  # must be exact
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
