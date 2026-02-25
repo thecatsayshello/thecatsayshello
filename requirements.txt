@@ -1,5 +1,4 @@
---upgrade pip
-streamlit
+streamlit==1.41.1
 moviepy
 pillow
 imageio-ffmpeg
