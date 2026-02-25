@@ -1,5 +1,5 @@
+--upgrade pip
 streamlit
-pillow==9.5.0
-moviepy==1.0.3
-imageio==2.35.1
-imageio-ffmpeg==0.5.1
+moviepy
+pillow
+imageio-ffmpeg
