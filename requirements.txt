@@ -1,5 +1,6 @@
 streamlit
 moviepy==1.0.3
 pillow==9.5.0
-imageio-ffmpeg
-opencv-python-headless
+imageio==2.35.1
+imageio-ffmpeg==0.5.1
+opencv-python-headless==4.10.0.84
