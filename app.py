@@ -2,11 +2,12 @@ import streamlit as st
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+from moviepy import vfx   # this is the correct way for v2.2.1
 from PIL import Image
 import tempfile
 import os
 
-HAND_GIF = "waving_hand.gif"  # must be exact
+HAND_GIF = "waving_hand.gif"   # must be exact name
 
 st.set_page_config(page_title="Cat Waving Paw Maker", layout="centered")
 
@@ -34,8 +35,10 @@ if uploaded_file is not None:
                 hand_clip = VideoFileClip(HAND_GIF, has_mask=True)
 
                 duration = 4.0
-                cat_clip.duration = duration                     # v2 syntax
-                hand_looped = hand_clip.loop(duration=duration)  # v2 syntax
+                cat_clip.duration = duration
+
+                # Correct v2.2.1 way to loop
+                hand_looped = hand_clip.fx(vfx.loop, duration=duration)
 
                 hand_resized = hand_looped.resize(width=int(cat_clip.w * 0.30))
 
@@ -59,4 +62,4 @@ if uploaded_file is not None:
                 )
 
         except Exception as e:
-            st.error(f"Error: {str(e)}\n\nTry a different cat image or smaller size.")
+            st.error(f"Error: {str(e)}\n\nTry a different image or smaller size.")
