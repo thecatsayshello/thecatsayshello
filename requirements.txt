@@ -1,5 +1,5 @@
 streamlit
 moviepy
+opencv-python-headless
 pillow
 imageio-ffmpeg
-opencv-python-headless
